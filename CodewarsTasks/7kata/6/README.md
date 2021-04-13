@@ -1,0 +1,2 @@
+Название задания Indexed capitalization
+
