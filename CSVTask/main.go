@@ -2,16 +2,20 @@ package main
 
 import (
 	"Vitokz/CSVTask/internal"
-	"bufio"
 	"encoding/csv"
+	"flag"
 	"fmt"
 	"os"
 	"strings"
 )
 
 func main() {
+
+	csvFile:=flag.String("file","csvdata/problems.csv","файл с тестами") //Флаг задающий имя файла который нужно спрасить и провести тест
+    seconds:=flag.Int("timer",30,"Время на ответ")
+	flag.Parse()
 	//Открытие файла CSV
-	file, err := os.Open("csvdata/problems.csv")
+	file, err := os.Open(*csvFile)
 	//Проверка открылся ли фаил
 	if err != nil {
 		panic(err)
@@ -35,14 +39,13 @@ func main() {
 			fmt.Println(e)
 			break
 		}
-
+        
 		fmt.Println(record[0] + "=")
-		fmt.Print("Введите ответ:")
+		fmt.Printf("У вас %d с. Введите ответ:", *seconds)
 
-		answer := bufio.NewReader(os.Stdin) //ВВ=вожу ответ
-		inp, _ := answer.ReadString('\n')
-	
-		check,ok:=internal.Check(strings.TrimSpace(inp),record[1])
+		answer := internal.Input(*seconds)
+
+		check,ok:=internal.Check(strings.TrimSpace(answer),record[1])
 		fmt.Println(check + "\n")
 		if ok {
 			arrayAns["right"]++
