@@ -33,7 +33,7 @@ func main() {
 	defer file.Close()
 
 	reader := csv.NewReader(file) //NewReader  читает фаил и создает класс который читает данные из file
-	reader.FieldsPerRecord = 2    //берем элементы до 2 каждой строки
+	// reader.FieldsPerRecord = 2    //берем элементы до 2 каждой строки
 
 	//Массив для сбора информации о правильных и неправильных ответах
 	var arrayAns = map[string]int{
@@ -43,7 +43,8 @@ func main() {
 
 	/* Канал */
 	chanel := make(chan string)
-	/* Таймер */ timer := time.NewTimer(time.Duration(*seconds) * time.Second)
+	/* Таймер */
+	timer := time.NewTimer(time.Duration(*seconds) * time.Second)
 loop: // "Имя" функции
 	for {
 		record, e := reader.Read() //Достаю строки поочередно
@@ -52,7 +53,7 @@ loop: // "Имя" функции
 		}
 
 		fmt.Print(record[0] + "=")
-		fmt.Print("Введите ответ:")
+		// fmt.Print("Введите ответ:")
 
 		go func() { //Горутина для ввода ответов
 			reader := bufio.NewReader(os.Stdin)

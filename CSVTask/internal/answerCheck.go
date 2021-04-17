@@ -2,10 +2,12 @@ package internal
 
 import (
 	"fmt"
-	"log"
 	"math/rand"
+	"os"
 	"strconv"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 func Check(userAns, rightAns string) (string, bool) {
@@ -17,9 +19,11 @@ func Check(userAns, rightAns string) (string, bool) {
 		fmt.Println("Буквы вводить запрещено")
 		return incorrect[rand.Intn(4)], false
 	}
-	riAns, _ := strconv.Atoi(rightAns)
+	riAns, err := strconv.Atoi(rightAns)
 	if err != nil {
-		log.Fatal(err.Error())
+		errWrapped := errors.Wrap(err, "Неверные данные в csv")
+		fmt.Println(errWrapped)
+		os.Exit(1)
 	}
 
 	if usAns == riAns {
