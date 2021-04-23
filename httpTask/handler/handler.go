@@ -37,9 +37,13 @@ func(h *Handler) AdminUser(w http.ResponseWriter, r *http.Request) {
  
   if(sess.Role=="") { // Проверка на авторизацию
     w.WriteHeader(401) // выдаю ошибку 401
+    json.NewEncoder(w).Encode("Вы не авторизованы")
+    return
   }
   if(sess.Role!="admin") { // Проверка на админа
     w.WriteHeader(400) // выдаю ошибку 400
+    json.NewEncoder(w).Encode("Вы не админ")
+    return
   }
 
   answer := proto.Address{
