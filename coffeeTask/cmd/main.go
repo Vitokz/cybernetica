@@ -4,6 +4,8 @@ import (
    "main/internal/machine"
    "fmt"
    "main/model"
+   //tea "github.com/charmbracelet/bubbletea"
+   //"os"
 )
 
 func main() {
@@ -14,5 +16,6 @@ func main() {
   if err != nil {
     fmt.Println(err)
   }
+
   mach.Start()
 }
