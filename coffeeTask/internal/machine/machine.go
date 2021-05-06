@@ -67,6 +67,7 @@ func (m *CoffeeMachine) Start() {
 func (m *CoffeeMachine) Init() tea.Cmd {
 	return textinput.Blink
 }
+
 func (m *CoffeeMachine) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
@@ -96,6 +97,7 @@ func (m *CoffeeMachine) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 	return m, nil
 }
+
 func (m *CoffeeMachine) View() string {
 	var s string
 
