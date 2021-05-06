@@ -177,7 +177,13 @@ func updateChoicesCoffee(msg tea.Msg, m *CoffeeMachine) (tea.Model, tea.Cmd) {
 }
 
 func updateFill(msg tea.Msg, m *CoffeeMachine) (tea.Model, tea.Cmd) {
-	var cmd tea.Cmd
+	var (
+		cmd   tea.Cmd
+		water int
+		corn  int
+		cup   int
+		milk  int
+	)
 
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
@@ -195,15 +201,29 @@ func updateFill(msg tea.Msg, m *CoffeeMachine) (tea.Model, tea.Cmd) {
 			s := msg.String()
 
 			if s == "enter" && m.InputIndex == len(inputs) {
-				plusWater(m)
-				plusCorn(m)
-				plusCup(m) //Добавить проверку на ошибки и применить соответсвующие действия
-				plusMilk(m)
+				water = plusWater(m)
 				if m.Err != nil {
 					return m, cmd
 				}
+				corn = plusCorn(m)
+				if m.Err != nil {
+					return m, cmd
+				}
+				cup = plusCup(m)
+				if m.Err != nil {
+					return m, cmd
+				}
+				milk = plusMilk(m)
+				if m.Err != nil {
+					return m, cmd
+				}
+				m.Storage.Water += water
+				m.Storage.CoffeCorn += corn
+				m.Storage.Milk += milk
+				m.Storage.CupCoount += cup
 				m.Err = nil
 				m.Chosen = false
+				updateInputsReset(m)
 				return m, cmd
 			}
 
@@ -352,16 +372,13 @@ func addFill(m *CoffeeMachine) string {
 		m.Input.Corn.View(),
 		m.Input.Cup.View(),
 	}
-
-	for i := 0; i < len(inputs); i++ {
-		s += inputs[i]
-		if i < len(inputs)-1 {
-			s += "\n"
-		}
-	}
+	s += fmt.Sprintf(inputs[0]+"   На данный момент в машине %v мл воды, можно добавить еще %v"+"\n", m.Storage.Water, proto.WATER-m.Storage.Water)
+	s += fmt.Sprintf(inputs[1]+"   На данный момент в машине %v мл молока, можно добавить еще %v"+"\n", m.Storage.Milk, proto.MILK-m.Storage.Milk)
+	s += fmt.Sprintf(inputs[2]+"   На данный момент в машине %v г зерна, можно добавить еще %v"+"\n", m.Storage.CoffeCorn, proto.CORN-m.Storage.CoffeCorn)
+	s += fmt.Sprintf(inputs[3]+"   На данный момент в машине %v шт стаканчиков, можно добавить еще %v", m.Storage.CupCoount, proto.CUP-m.Storage.CupCoount)
 
 	s += "\n\n" + m.Input.SubmitButton + "\n"
-	s += subtle("j/k, up/down: select") + dot + subtle("q, esc: quit") + dot + subtle("b:go back")
+	s += subtle("j/k, up/down: select") + dot + subtle("enter: choose") + dot + subtle("q, esc: quit") + dot + subtle("b:go back")
 	return s
 }
 
@@ -406,6 +423,13 @@ func updateInputs(msg tea.Msg, m *CoffeeMachine) (*CoffeeMachine, tea.Cmd) {
 	cmds = append(cmds, cmd)
 
 	return m, tea.Batch(cmds...)
+}
+
+func updateInputsReset(m *CoffeeMachine) {
+	m.Input.Water.SetValue("")
+	m.Input.Corn.SetValue("")
+	m.Input.Cup.SetValue("")
+	m.Input.Milk.SetValue("")
 }
 
 //Для функции Buy
@@ -471,52 +495,56 @@ func setError(m *CoffeeMachine) {
 
 //
 //Относятся к fill
-func plusWater(m *CoffeeMachine) {
+func plusWater(m *CoffeeMachine) int {
 	wt, err := strconv.Atoi(m.Input.Water.Value())
 	if err != nil {
 		m.Err = errors.New("нельзя вводить буквы")
-		return
+		return 0
 	}
 	if wt+m.Storage.Water > proto.WATER {
 		m.Err = fmt.Errorf("в поле воды значение больше возможного. Вы можете ввести %v", proto.WATER-m.Storage.Water)
-		return
+		return 0
 	}
-	m.Storage.Water += wt
+	m.Err = nil
+	return wt
 }
 
-func plusCorn(m *CoffeeMachine) {
+func plusCorn(m *CoffeeMachine) int {
 	corn, err := strconv.Atoi(m.Input.Corn.Value())
 	if err != nil {
 		m.Err = errors.New("нельзя вводить буквы")
-		return
+		return 0
 	}
 	if corn+m.Storage.CoffeCorn > proto.CORN {
 		m.Err = fmt.Errorf("в поле Зерна значение больше возможного. Вы можете ввести %v", proto.CORN-m.Storage.CoffeCorn)
-		return
+		return 0
 	}
-	m.Storage.CoffeCorn += corn
+	m.Err = nil
+	return corn
 }
-func plusMilk(m *CoffeeMachine) {
+func plusMilk(m *CoffeeMachine) int {
 	milk, err := strconv.Atoi(m.Input.Milk.Value())
 	if err != nil {
 		m.Err = errors.New("нельзя вводить буквы")
-		return
+		return 0
 	}
 	if milk+m.Storage.Milk > proto.MILK {
 		m.Err = fmt.Errorf("в поле молока значение больше возможного. Вы можете ввести %v", proto.MILK-m.Storage.Milk)
-		return
+		return 0
 	}
-	m.Storage.Milk += milk
+	m.Err = nil
+	return milk
 }
-func plusCup(m *CoffeeMachine) {
+func plusCup(m *CoffeeMachine) int {
 	cup, err := strconv.Atoi(m.Input.Cup.Value())
 	if err != nil {
 		m.Err = errors.New("нельзя вводить буквы")
-		return
+		return 0
 	}
 	if cup+m.Storage.CupCoount > proto.CUP {
 		m.Err = fmt.Errorf("в поле стаканчиков значение больше возможного. Вы можете ввести %v", proto.CUP-m.Storage.CupCoount)
-		return
+		return 0
 	}
-	m.Storage.CupCoount += cup
+	m.Err = nil
+	return cup
 }
