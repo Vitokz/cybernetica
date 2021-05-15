@@ -24,9 +24,9 @@ type GroupRepository interface {
 	Groups(context.Context, *[]model.Groups) (*[]model.Groups, error)
 	// GroupSort()
 	// GroupTop()
-	// GroupId()
+	GroupId(context.Context, *model.GroupNew, int) (*model.GroupNew, error)
 	// GroupChildsByID()
-	// GroupNew()
+	GroupNew(context.Context, *model.GroupNew) (*model.GroupNew, error)
 	// GroupRefresh()
 	// GroupDelete()
 }
