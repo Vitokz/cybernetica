@@ -13,14 +13,13 @@ type Rest struct {
 
 func (r *Rest) Rout() {
 	g := r.Router.Group("/groups")
-	g.GET("", r.Handler.Groups)
-	//g.GET("?sort=name&limit=n", r.Handler.GroupsSort)
-	// g.GET("/top_parents", r.Handler.GroupTop)
+	g.GET("", r.Handler.GroupsSort)
+	g.GET("/top_parents", r.Handler.GroupTop)
 	g.GET("/:id", r.Handler.GroupId)
-	// g.GET("/childs/:id", r.Handler.GroupChildsByID)
+	g.GET("/childs/:id", r.Handler.GroupChildsByID)
 	g.POST("/new", r.Handler.GroupNew)
-	// g.PUT("/:id", r.Handler.GroupRefresh)
-	// g.DELETE("/:id", r.Handler.GroupDelete)
+	g.PUT("/:id", r.Handler.GroupRefresh)
+	g.DELETE("/:id", r.Handler.GroupDelete)
 
 	r.Router.POST("/auth/new", r.Handler.Auth)
 	r.Router.POST("/login", r.Handler.Login)

@@ -22,13 +22,16 @@ type AuthRepository interface {
 
 type GroupRepository interface {
 	Groups(context.Context, *[]model.Groups) (*[]model.Groups, error)
-	// GroupSort()
-	// GroupTop()
+	GroupTop(context.Context, *[]model.GroupParents) (*[]model.GroupParents, error)
 	GroupId(context.Context, *model.GroupNew, int) (*model.GroupNew, error)
-	// GroupChildsByID()
+	GroupChildsByID(context.Context, *[]model.GroupNew, int) (*[]model.GroupNew, error)
 	GroupNew(context.Context, *model.GroupNew) (*model.GroupNew, error)
-	// GroupRefresh()
-	// GroupDelete()
+	GroupRefresh(context.Context, *model.GroupNew, int) (*model.GroupNew, error)
+	GroupDelete(context.Context, *model.Groups, int) error
+	//GroupSort functions
+	GroupsSortByName(context.Context, *[]model.Groups, int) (*[]model.Groups, error)
+	GroupsSortByParentsFirst(context.Context, *[]model.Groups, int) (*[]model.Groups, error)
+	GroupsByParentsWithChilds(context.Context, *[]model.Groups, int) (*[]model.Groups, error)
 }
 
 type TaskRepository interface {

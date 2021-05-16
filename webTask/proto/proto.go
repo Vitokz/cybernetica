@@ -14,3 +14,11 @@ type LoginResponse struct {
 type GroupsResponse struct {
 	Groups []model.Groups `json:"groups"`
 }
+
+type GroupsChildsById struct {
+	Ghilds []model.GroupNew `json:"childs"`
+}
+
+type GroupsParents struct {
+	Parents []model.GroupParents `json:"parents"`
+}
