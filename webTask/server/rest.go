@@ -24,12 +24,12 @@ func (r *Rest) Rout() {
 	r.Router.POST("/auth/new", r.Handler.Auth)
 	r.Router.POST("/login", r.Handler.Login)
 
-	// t := r.Router.Group("/tasks")
-	// t.GET("?sort=[name|groups]&limit=n&type=[all|completed|working]", r.Handler.TasksSort)
-	// t.POST("/new", r.Handler.TaskNew)
-	// t.PUT("/:id", r.Handler.TaskRefresh)
-	// t.POST("/:id?finished=(true|false)", r.Handler.TaskReady)
-	// t.GET("/stat/(today|yesterday|week|month)", r.Handler.TaskStat)
+	t := r.Router.Group("/tasks")
+	t.GET("", r.Handler.TaskSort)
+	t.POST("/new", r.Handler.TaskNew)
+	t.PUT("/:id", r.Handler.TaskRefresh)
+	t.POST("/:id?finished=(true|false)", r.Handler.TaskReady)
+	t.GET("/stat/:type", r.Handler.TaskStat)
 }
 
 func (r *Rest) Start(port string) {

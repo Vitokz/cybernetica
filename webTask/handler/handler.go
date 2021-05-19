@@ -35,9 +35,14 @@ type GroupRepository interface {
 }
 
 type TaskRepository interface {
-	// TaskNew()
-	// TaskRefresh()
-	// TaskStat()
-	// TaskReady()
-	// TaskSort()
+	TaskNew(context.Context, *model.Task) (*model.Task, error)
+	TaskRefresh(context.Context, *model.Task, string) (*model.Task, error)
+	TaskStat(context.Context, *model.Task, string) (*model.TaskStat, error)
+	TaskReady(context.Context, *model.Task) (*model.Task, error)
+	// TaskSort
+	TaskSortByName(context.Context, *[]model.Task, int, string) (*[]model.Task, error)
+	TaskSortByGroups(context.Context, *[]model.Task, int, string) (*[]model.Task, error)
+	//Вспомогательные
+	CheckGroup(context.Context, *model.Groups, int) error
+	InitTask(context.Context, *model.Task) (*model.Task, error)
 }
